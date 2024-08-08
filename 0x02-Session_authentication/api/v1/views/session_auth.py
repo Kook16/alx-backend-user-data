@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 """Session auth views"""
 from flask import abort, request, jsonify
 from os import getenv
