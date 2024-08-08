@@ -46,6 +46,6 @@ def login_session() -> str:
                 response = jsonify(user.to_json())
                 session_name = getenv('SESSION_NAME')
                 response.set_cookie(session_name, session_id)
-                return resp
+                return response
 
         return jsonify({"error": "wrong password"}), 401
