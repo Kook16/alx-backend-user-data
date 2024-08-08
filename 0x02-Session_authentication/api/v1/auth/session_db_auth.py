@@ -8,7 +8,8 @@ from models.user_session import UserSession
 
 
 class SessionDBAuth(SessionExpAuth):
-    """SessionDBAuth class that extends session expiration auth with database support."""
+    """SessionDBAuth class that extends session expiration
+    auth with database support."""
 
     def __init__(self) -> None:
         """Initialize SessionDBAuth with session duration."""
@@ -16,7 +17,8 @@ class SessionDBAuth(SessionExpAuth):
         self.session_duration = int(getenv("SESSION_DURATION", 0))
 
     def create_session(self, user_id=None):
-        """Creates and stores a new instance of UserSession and returns the Session ID."""
+        """Creates and stores a new instance of UserSession and
+        returns the Session ID."""
         session_id = super().create_session(user_id)
         if not session_id:
             return None
@@ -35,7 +37,8 @@ class SessionDBAuth(SessionExpAuth):
         return session_id
 
     def user_id_for_session_id(self, session_id=None):
-        """Returns the User ID by querying UserSession in the database based on session_id."""
+        """Returns the User ID by querying UserSession in the database
+        based on session_id."""
         if not session_id:
             return None
 
@@ -50,7 +53,8 @@ class SessionDBAuth(SessionExpAuth):
         user = user_session[0]
 
         # Calculate the expiration time
-        expired_time = user.created_at + timedelta(seconds=self.session_duration)
+        expired_time = user.created_at + timedelta(
+                    seconds=self.session_duration)
 
         # Check if the session is expired
         if expired_time < datetime.utcnow():
@@ -59,7 +63,8 @@ class SessionDBAuth(SessionExpAuth):
         return user.user_id
 
     def destroy_session(self, request=None):
-        """Destroys the UserSession based on the Session ID from the request cookie."""
+        """Destroys the UserSession based on the Session ID from the
+        request cookie."""
         if not request:
             return False
 

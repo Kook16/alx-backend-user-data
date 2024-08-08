@@ -49,6 +49,7 @@ def handle_before_request() -> None:
                 abort(403)
             request.current_user = auth.current_user(request)
 
+
 @app.errorhandler(404)
 def not_found(error) -> str:
     """Handler for 404 Not Found errors."""
