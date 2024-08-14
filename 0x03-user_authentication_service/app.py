@@ -8,6 +8,7 @@ from auth import Auth
 app = Flask(__name__)
 AUTH = Auth()
 
+
 @app.route("/", methods=["GET"])
 def home():
     return jsonify({"message": "Bienvenue"})
@@ -72,8 +73,7 @@ def logout():
         if user:
             return jsonify({"email": user.email})
 
-        abort(403)  # Forbidden if the session ID is invalid or no user is found
-
+        abort(403)
 
     @app.route('/reset_password', methods=['PUT'])
     def update_password():

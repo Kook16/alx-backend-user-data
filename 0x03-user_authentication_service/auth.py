@@ -40,7 +40,6 @@ class Auth:
             new_user = self._db.add_user(email, hashed_password)
             return new_user
 
-
     def valid_login(self, email: str, password: str) -> bool:
         """Validates login credentials.
 
@@ -79,7 +78,8 @@ class Auth:
             session_id (str): The session ID.
 
         Returns:
-            User: The User object corresponding to the session ID, or None if no user is found.
+            User: The User object corresponding to the session ID, or
+            None if no user is found.
         """
         if not session_id:
             return None
@@ -93,7 +93,8 @@ class Auth:
             return None
 
     def destroy_session(self, user_id: int) -> None:
-        """Destroy the session for a given user ID by setting the session ID to None.
+        """Destroy the session for a given user ID by setting the session ID
+        to None.
 
         Args:
             user_id (int): The ID of the user whose session is to be destroyed.
@@ -130,8 +131,8 @@ class Auth:
 
         return reset_token
 
-
-    def update_password(self, reset_token: str, password: str) -> None:
+    def update_password(
+            self, reset_token: str, password: str) -> None:
         """Update the user's password using a reset token.
 
         Args:
