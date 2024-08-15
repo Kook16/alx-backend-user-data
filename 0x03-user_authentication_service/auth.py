@@ -153,7 +153,7 @@ class Auth:
 
         # Update the user's hashed_password and reset_token
         self._db.update_user(
-            email=user.email,
+            user.id,
             hashed_password=hashed_password,
             reset_token=None
         )
