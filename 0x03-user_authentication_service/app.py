@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """A Flask app"""
 
-
-from flask import Flask, jsonify, request, abort
+from flask import Flask, jsonify, request, abort, redirect
 from auth import Auth
 
 app = Flask(__name__)
+app.url_map.strict_slashes = False
 AUTH = Auth()
 
 
@@ -42,7 +42,8 @@ def login():
     else:
         abort(401)
 
-    @app.route('/sessions', methods=['DELETE'])
+
+@app.route('/sessions', methods=['DELETE'])
 def logout():
     session_id = request.cookies.get('session_id')
 
@@ -61,31 +62,45 @@ def logout():
     # If user not found, respond with a 403 Forbidden status
     abort(403)
 
-    @app.route('/profile', methods=['GET'])
-    def profile():
-        session_id = request.cookies.get('session_id')
 
-        if not session_id:
-            abort(403)  # Forbidden if no session ID is provided
+@app.route('/profile', methods=['GET'])
+def profile():
+    session_id = request.cookies.get('session_id')
 
-        user = AUTH.get_user_from_session_id(session_id)
+    if not session_id:
+        abort(403)  # Forbidden if no session ID is provided
 
-        if user:
-            return jsonify({"email": user.email})
+    user = AUTH.get_user_from_session_id(session_id)
 
+    if user:
+        return jsonify({"email": user.email})
+
+    abort(403)
+
+
+@app.route('/reset_password', methods=['POST'])
+def get_password_reset_token():
+    """Handle the password reset request."""
+    email = request.form.get('email')
+    try:
+        token = Auth.get_reset_password_token(email)
+    except ValueError:
+        abort(404)
+    return jsonify({'email': email, 'reset_token': token}), 200
+
+
+@app.route('/reset_password', methods=['PUT'])
+def reset_password():
+    """Reset the user password"""
+    email = request.form.get('email')
+    token = request.form.get('reset_token')
+    new_password = request.form.get('new_password')
+
+    try:
+        AUTH.update_password(token, new_password)
+    except ValueError:
         abort(403)
-
-    @app.route('/reset_password', methods=['PUT'])
-    def update_password():
-        """Handle the password reset request."""
-        try:
-            user = self._db.find_user_by(reset_token=reset_token)
-            hashed_password = _hash_password(password)
-            self._db.update_user(
-                user.id, hashed_password=hashed_password, reset_token=None)
-            return None
-        except NoResultFound:
-            raise ValueError
+    return jsonify({'email': email, "message": "Password updated"})
 
 
 if __name__ == "__main__":

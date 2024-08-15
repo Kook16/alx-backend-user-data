@@ -11,9 +11,10 @@ from db import DB, User
 
 
 class Auth:
-    """Auth class to interact with the authentication database."""
+    """Auth class for the authentication database."""
 
     def __init__(self):
+        """Initializer function"""
         self._db = DB()
 
     def register_user(self, email: str, password: str) -> User:
@@ -121,11 +122,10 @@ class Auth:
             # Find the user by email
             user = self._db.find_user_by(email=email)
         except NoResultFound:
-            raise ValueError("User not found")
+            raise ValueError
 
         # Generate a new UUID token
-        reset_token = str(uuid.uuid4())
-
+        reset_token = _generate_uuid()
         # Update the user's reset_token field
         self._db.update_user(email=email, reset_token=reset_token)
 
@@ -146,7 +146,7 @@ class Auth:
             # Find the user by reset token
             user = self._db.find_user_by(reset_token=reset_token)
         except NoResultFound:
-            raise ValueError("Invalid reset token")
+            raise ValueError
 
         # Hash the new password
         hashed_password = _hash_password(password)
